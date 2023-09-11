@@ -25,7 +25,7 @@ const result = match(1)
   .when(2, 'two')
   .when(3, 'three')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with in operator
@@ -33,7 +33,7 @@ const result = match(1)
 const result = match(1)
   .when({in: [1]}, 'one')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with range operator
@@ -41,7 +41,7 @@ const result = match(1)
 const result = match(1)
   .when({range: [1, 3]}, 'one')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with regex operator
@@ -49,7 +49,7 @@ const result = match(1)
 const result = match('foo')
   .when(/foo/, 'one')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with function operator
@@ -57,7 +57,7 @@ const result = match('foo')
 const result = match(1)
   .when((value) => value === 1, 'one')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with startswith operator
@@ -65,7 +65,7 @@ const result = match(1)
 const result = match('foo')
   .when({startsWith: 'f'}, 'one')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with endswith operator
@@ -73,7 +73,7 @@ const result = match('foo')
 const result = match('foo')
   .when({endsWith: 'o'}, 'one')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with contains operator
@@ -81,7 +81,7 @@ const result = match('foo')
 const result = match('foo')
   .when({contains: 'oo'}, 'one')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with multiple operators
@@ -92,7 +92,7 @@ const result = match(1)
   .when(/foo/, 'three')
   .when((value) => value === 1, 'four')
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### statement with throw instead of else
@@ -103,7 +103,7 @@ const result = match(99)
   .when(/foo/, 'three')
   .when((value) => value === 1, 'four')
   .throw('Not found')
-  .resolve();
+  .exec();
 ```
 
 ### async statement
@@ -111,7 +111,7 @@ const result = match(99)
 const result = await matchAsync(1)
   .when(Promise.resolve({in: [1]}), Promise.resolve('one'))
   .default('other')
-  .resolve();
+  .exec();
 ```
 
 ### async statement with throw instead of else
@@ -122,6 +122,6 @@ const result = await matchAsync(99)
   .when(Promise.resolve(/foo/), Promise.resolve('three'))
   .when(Promise.resolve((value) => value === 1), Promise.resolve('four'))
   .throw('Not found')
-  .resolve();
+  .exec();
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "ifty",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Matches through piped operations",
   "type": "module",
   "exports": {
@@ -17,6 +17,10 @@
         "dist/*.d.ts"
       ]
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DominicVonk/ifty.git"
   },
   "scripts": {
     "lint": "eslint 'src/**/*.ts'",

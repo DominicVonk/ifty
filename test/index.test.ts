@@ -5,7 +5,7 @@ describe('match', function () {
     expect(
       match('Hello world')
         .when('Hello world', () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -16,7 +16,7 @@ describe('match', function () {
           (input) => input === 'Hello world',
           () => true,
         )
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -24,7 +24,7 @@ describe('match', function () {
     expect(
       match('Hello world')
         .when(/Hello world/, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -32,7 +32,7 @@ describe('match', function () {
     expect(
       match('Hello world')
         .when('Hello', () => true)
-        .resolve(),
+        .exec(),
     ).toBe(undefined);
   });
 
@@ -41,7 +41,7 @@ describe('match', function () {
       match('Hello world')
         .when('Hello', () => true)
         .default(() => false)
-        .resolve(),
+        .exec(),
     ).toBe(false);
   });
 
@@ -49,7 +49,7 @@ describe('match', function () {
     expect(
       match('Hello world')
         .when({ in: ['Hello world'] }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -57,7 +57,7 @@ describe('match', function () {
     expect(
       match('Hello world')
         .when({ startsWith: 'Hello' }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -65,7 +65,7 @@ describe('match', function () {
     expect(
       match('Hello world')
         .when({ endsWith: 'world' }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -73,7 +73,7 @@ describe('match', function () {
     expect(
       match('Hello world')
         .when({ contains: 'o wo' }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -81,7 +81,7 @@ describe('match', function () {
     expect(
       match(5)
         .when({ range: [1, 10] }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -89,7 +89,7 @@ describe('match', function () {
     expect(
       match(new Error())
         .when({ instanceof: Error }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -97,7 +97,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve('Hello world'), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -108,7 +108,7 @@ describe('match', function () {
           async (input) => input === 'Hello world',
           async () => true,
         )
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -116,7 +116,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve(/Hello world/), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -124,7 +124,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve('Hello'), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(undefined);
   });
 
@@ -132,7 +132,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve({ in: ['Hello world'] }), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -140,7 +140,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve({ startsWith: 'Hello' }), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -148,7 +148,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve({ endsWith: 'world' }), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -156,7 +156,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve({ contains: 'o wo' }), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -164,7 +164,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, number>(5)
         .when(Promise.resolve({ range: [1, 10] }), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -172,7 +172,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, Error>(new Error())
         .when(Promise.resolve({ instanceof: Error }), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -180,7 +180,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve('Hello world'), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -189,7 +189,7 @@ describe('match', function () {
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve('Hello'), async () => true)
         .default(async () => false)
-        .resolve(),
+        .exec(),
     ).toBe(false);
   });
 
@@ -197,7 +197,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string>('Hello world')
         .when({ in: 'Hello world' }, async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -205,14 +205,14 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, string[]>(['Hello world'])
         .when({ contains: 'Hello world' }, async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
   it('should match contains array', async function () {
     expect(
       await matchAsync<boolean, number>(5)
         .when({ in: 4 as unknown as string }, async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(undefined);
   });
 
@@ -220,7 +220,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, number>(5)
         .when({ contains: 'Hello world' }, async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(undefined);
   });
 
@@ -228,7 +228,7 @@ describe('match', function () {
     expect(
       await matchAsync<boolean, number>(5)
         .when(Promise.resolve({ contains: 'Hello world' }), async () => true)
-        .resolve(),
+        .exec(),
     ).toBe(undefined);
   });
   it('should throw when no result is found', () => {
@@ -236,7 +236,7 @@ describe('match', function () {
       match('Hello world')
         .when('Hello', () => true)
         .throw(new Error('No match found'))
-        .resolve(),
+        .exec(),
     ).toThrow('No match found');
   });
 
@@ -245,7 +245,7 @@ describe('match', function () {
       matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve('Hello'), async () => true)
         .throw(new Error('No match found'))
-        .resolve(),
+        .exec(),
     ).rejects.toThrow('No match found');
   });
 
@@ -254,7 +254,7 @@ describe('match', function () {
       match('Hello world')
         .when('Hello world', () => true)
         .throw(new Error('No match found'))
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -263,7 +263,7 @@ describe('match', function () {
       await matchAsync<boolean, string>('Hello world')
         .when(Promise.resolve('Hello world'), async () => true)
         .throw(new Error('No match found'))
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -271,7 +271,7 @@ describe('match', function () {
     expect(
       match({ a: 1, b: 2, c: 3 })
         .when({ partial: { a: 1 } }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -279,7 +279,7 @@ describe('match', function () {
     expect(
       match({ a: 1, b: 2, c: 3 })
         .when({ partial: { a: 1, b: 2 } }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -287,7 +287,7 @@ describe('match', function () {
     expect(
       match({ a: 1, b: 2, c: 3 })
         .when({ partial: { a: 1, b: 2, c: 3 } }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -295,7 +295,7 @@ describe('match', function () {
     expect(
       match({ a: 1, b: 2, c: 3 })
         .when({ partial: { a: 1, b: 2, c: 3, d: 4 } }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(undefined);
   });
 
@@ -304,7 +304,7 @@ describe('match', function () {
     expect(
       match({ a: 1, b: { c: 3 } })
         .when({ partial: { b: { c: 3 } } }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -312,7 +312,7 @@ describe('match', function () {
     expect(
       match({ a: 1, b: { c: 3 } })
         .when({ partial: { a: 1, b: { c: 3 } } }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(true);
   });
 
@@ -320,7 +320,15 @@ describe('match', function () {
     expect(
       match({ a: 1, b: { c: 3 } })
         .when({ partial: { a: 1, b: { c: 4 } } }, () => true)
-        .resolve(),
+        .exec(),
     ).toBe(undefined);
+  });
+
+  it('should match the first occurrence with partial', function () {
+    expect(
+      match([{ a: 1 }, { a: 1, b: { c: 3 } }])
+        .when({ partial: [{}, { a: 1, b: { c: 3 } }] }, () => true)
+        .exec(),
+    ).toBe(true);
   });
 });

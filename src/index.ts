@@ -2,22 +2,22 @@ type MatchWith<T, I> = {
   when: (value: ValueType<I>, result: () => T) => MatchWith<T, I>;
   throw: (error: Error | (() => Error)) => MatchOtherwise<T>;
   default: (result: () => T) => MatchOtherwise<T>;
-  resolve: () => T | undefined;
+  exec: () => T | undefined;
 };
 
 type MatchWithAsync<T, I> = {
   when: (value: Promise<ValueTypeAsync<I>> | ValueTypeAsync<I>, result: () => Promise<T> | T) => MatchWithAsync<T, I>;
   throw: (error: Error | (() => Error)) => MatchOtherwiseAsync<T>;
   default: (result: () => Promise<T> | T) => MatchOtherwiseAsync<T>;
-  resolve: () => Promise<T | undefined>;
+  exec: () => Promise<T | undefined>;
 };
 
 type MatchOtherwise<T> = {
-  resolve: () => T | undefined;
+  exec: () => T | undefined;
 };
 
 type MatchOtherwiseAsync<T> = {
-  resolve: () => Promise<T | undefined>;
+  exec: () => Promise<T | undefined>;
 };
 
 type ValueType<I> =
@@ -56,7 +56,7 @@ export function match<T, I>(input: I): MatchWith<T, I> {
     when: _matches<T, I>(input, statements),
     default: _else<T, I>(input, statements),
     throw: _throw<T, I>(input, statements),
-    resolve: () => _resolveStatements<T, I>(input, statements),
+    exec: () => _resolveStatements<T, I>(input, statements),
   };
 }
 
@@ -66,7 +66,7 @@ export function matchAsync<T, I>(input: I | Promise<I>): MatchWithAsync<T, I> {
     when: _matchesAsync<T, I>(input, statements),
     default: _elseAsync<T, I>(input, statements),
     throw: _throwAsync<T, I>(input, statements),
-    resolve: () => _resolveStatementsAsync<T, I>(input, statements),
+    exec: () => _resolveStatementsAsync<T, I>(input, statements),
   };
 }
 
@@ -95,7 +95,7 @@ function _throw<T, I>(input: I, statements: Statements<T, I>) {
       isElse: true,
     });
     return {
-      resolve: () => _resolveStatements<T, I>(input, statements),
+      exec: () => _resolveStatements<T, I>(input, statements),
     };
   };
 }
@@ -110,7 +110,7 @@ function _throwAsync<T, I>(input: I | Promise<I>, statements: AsyncStatements<T,
       isElse: true,
     });
     return {
-      resolve: () => _resolveStatementsAsync<T, I>(input, statements),
+      exec: () => _resolveStatementsAsync<T, I>(input, statements),
     };
   };
 }
@@ -140,7 +140,7 @@ function _matches<T, I>(input: I, statements: Statements<T, I>) {
       when: _matches<T, I>(input, statements),
       throw: _throw<T, I>(input, statements),
       default: _else<T, I>(input, statements),
-      resolve: () => _resolveStatements<T, I>(input, statements),
+      exec: () => _resolveStatements<T, I>(input, statements),
     };
   };
 }
@@ -155,7 +155,7 @@ function _matchesAsync<T, I>(input: I | Promise<I>, statements: AsyncStatements<
       when: _matchesAsync<T, I>(input, statements),
       throw: _throwAsync<T, I>(input, statements),
       default: _elseAsync<T, I>(input, statements),
-      resolve: () => _resolveStatementsAsync<T, I>(input, statements),
+      exec: () => _resolveStatementsAsync<T, I>(input, statements),
     };
   };
 }
@@ -164,7 +164,7 @@ function _else<T, I>(input: I, statements: Statements<T, I>) {
   return function (result: () => T): MatchOtherwise<T> {
     statements.push({ statement: undefined, result, isElse: true });
     return {
-      resolve: () => _resolveStatements<T, I>(input, statements),
+      exec: () => _resolveStatements<T, I>(input, statements),
     };
   };
 }
@@ -173,7 +173,7 @@ function _elseAsync<T, I>(input: I | Promise<I>, statements: AsyncStatements<T, 
   return function (result: () => Promise<T> | T): MatchOtherwiseAsync<T> {
     statements.push({ statement: undefined, result, isElse: true });
     return {
-      resolve: () => _resolveStatementsAsync<T, I>(input, statements),
+      exec: () => _resolveStatementsAsync<T, I>(input, statements),
     };
   };
 }
