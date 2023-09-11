@@ -1,17 +1,14 @@
 type MatchWith<T, I> = {
-  matches: (value: ValueType<I>, result: () => T) => MatchWith<T, I>;
+  when: (value: ValueType<I>, result: () => T) => MatchWith<T, I>;
   throw: (error: Error | (() => Error)) => MatchOtherwise<T>;
-  else: (result: () => T) => MatchOtherwise<T>;
+  default: (result: () => T) => MatchOtherwise<T>;
   resolve: () => T | undefined;
 };
 
 type MatchWithAsync<T, I> = {
-  matches: (
-    value: Promise<ValueTypeAsync<I>> | ValueTypeAsync<I>,
-    result: () => Promise<T> | T,
-  ) => MatchWithAsync<T, I>;
+  when: (value: Promise<ValueTypeAsync<I>> | ValueTypeAsync<I>, result: () => Promise<T> | T) => MatchWithAsync<T, I>;
   throw: (error: Error | (() => Error)) => MatchOtherwiseAsync<T>;
-  else: (result: () => Promise<T> | T) => MatchOtherwiseAsync<T>;
+  default: (result: () => Promise<T> | T) => MatchOtherwiseAsync<T>;
   resolve: () => Promise<T | undefined>;
 };
 
@@ -32,7 +29,8 @@ type ValueType<I> =
   | { endsWith: string }
   | { contains: string }
   | { range: [number, number] }
-  | { instanceof: NewableFunction };
+  | { instanceof: NewableFunction }
+  | { partial: any };
 
 type ValueTypeAsync<I> = ValueType<I> | ((input: I) => Promise<boolean>);
 
@@ -52,21 +50,21 @@ type AsyncStatement<T, I> = {
 
 type AsyncStatements<T, I> = AsyncStatement<T, I>[];
 
-export function ifty<T, I>(input: I): MatchWith<T, I> {
+export function match<T, I>(input: I): MatchWith<T, I> {
   const statements: Statements<T, I> = [];
   return {
-    matches: _matches<T, I>(input, statements),
-    else: _else<T, I>(input, statements),
+    when: _matches<T, I>(input, statements),
+    default: _else<T, I>(input, statements),
     throw: _throw<T, I>(input, statements),
     resolve: () => _resolveStatements<T, I>(input, statements),
   };
 }
 
-export function iftyAsync<T, I>(input: I | Promise<I>): MatchWithAsync<T, I> {
+export function matchAsync<T, I>(input: I | Promise<I>): MatchWithAsync<T, I> {
   const statements: AsyncStatements<T, I> = [];
   return {
-    matches: _matchesAsync<T, I>(input, statements),
-    else: _elseAsync<T, I>(input, statements),
+    when: _matchesAsync<T, I>(input, statements),
+    default: _elseAsync<T, I>(input, statements),
     throw: _throwAsync<T, I>(input, statements),
     resolve: () => _resolveStatementsAsync<T, I>(input, statements),
   };
@@ -139,9 +137,9 @@ function _matches<T, I>(input: I, statements: Statements<T, I>) {
   return function (value: ValueType<I>, result: () => T): MatchWith<T, I> {
     statements.push({ statement: value, result });
     return {
-      matches: _matches<T, I>(input, statements),
+      when: _matches<T, I>(input, statements),
       throw: _throw<T, I>(input, statements),
-      else: _else<T, I>(input, statements),
+      default: _else<T, I>(input, statements),
       resolve: () => _resolveStatements<T, I>(input, statements),
     };
   };
@@ -154,9 +152,9 @@ function _matchesAsync<T, I>(input: I | Promise<I>, statements: AsyncStatements<
   ): MatchWithAsync<T, I> {
     statements.push({ statement: value, result });
     return {
-      matches: _matchesAsync<T, I>(input, statements),
+      when: _matchesAsync<T, I>(input, statements),
       throw: _throwAsync<T, I>(input, statements),
-      else: _elseAsync<T, I>(input, statements),
+      default: _elseAsync<T, I>(input, statements),
       resolve: () => _resolveStatementsAsync<T, I>(input, statements),
     };
   };
@@ -205,6 +203,9 @@ function _checker(input: any, value: any) {
     }
     if ('instanceof' in value) {
       return _checkInstanceOf(input, value.instanceof);
+    }
+    if ('partial' in value) {
+      return _checkPartial(input, value.partial);
     }
   }
   return input === value;
@@ -259,4 +260,23 @@ function _checkStartsWith(input: string, value: string) {
 
 function _checkEndsWith(input: string, value: string) {
   return typeof input === 'string' && typeof value === 'string' && input.endsWith(value);
+}
+
+// check partial nested object
+function _checkPartial(input: any, partial: any) {
+  if (typeof input !== 'object' || typeof partial !== 'object') {
+    return false;
+  }
+
+  for (const key in partial) {
+    if (typeof partial[key] === 'object') {
+      if (!_checkPartial(input[key], partial[key])) {
+        return false;
+      }
+    } else if (input[key] !== partial[key]) {
+      return false;
+    }
+  }
+
+  return true;
 }

@@ -11,8 +11,8 @@ npm install ifty
 ## Implementation
 
 ```javascript
-import { ifty } from 'ifty'; // Sync
-import { iftyAsync } from 'ifty'; // Async
+import { match } from 'ifty'; // Sync
+import { matchAsync } from 'ifty'; // Async
 ```
 
 ## Usage
@@ -20,107 +20,107 @@ import { iftyAsync } from 'ifty'; // Async
 ### normal statement
 
 ```javascript
-const result = ifty(1)
-  .matches(1, 'one')
-  .matches(2, 'two')
-  .matches(3, 'three')
-  .else('other')
+const result = match(1)
+  .when(1, 'one')
+  .when(2, 'two')
+  .when(3, 'three')
+  .default('other')
   .resolve();
 ```
 
 ### statement with in operator
 ```javascript
-const result = ifty(1)
-  .matches({in: [1]}, 'one')
-  .else('other')
+const result = match(1)
+  .when({in: [1]}, 'one')
+  .default('other')
   .resolve();
 ```
 
 ### statement with range operator
 ```javascript
-const result = ifty(1)
-  .matches({range: [1, 3]}, 'one')
-  .else('other')
+const result = match(1)
+  .when({range: [1, 3]}, 'one')
+  .default('other')
   .resolve();
 ```
 
 ### statement with regex operator
 ```javascript
-const result = ifty('foo')
-  .matches(/foo/, 'one')
-  .else('other')
+const result = match('foo')
+  .when(/foo/, 'one')
+  .default('other')
   .resolve();
 ```
 
 ### statement with function operator
 ```javascript
-const result = ifty(1)
-  .matches((value) => value === 1, 'one')
-  .else('other')
+const result = match(1)
+  .when((value) => value === 1, 'one')
+  .default('other')
   .resolve();
 ```
 
 ### statement with startswith operator
 ```javascript
-const result = ifty('foo')
-  .matches({startsWith: 'f'}, 'one')
-  .else('other')
+const result = match('foo')
+  .when({startsWith: 'f'}, 'one')
+  .default('other')
   .resolve();
 ```
 
 ### statement with endswith operator
 ```javascript
-const result = ifty('foo')
-  .matches({endsWith: 'o'}, 'one')
-  .else('other')
+const result = match('foo')
+  .when({endsWith: 'o'}, 'one')
+  .default('other')
   .resolve();
 ```
 
 ### statement with contains operator
 ```javascript
-const result = ifty('foo')
-  .matches({contains: 'oo'}, 'one')
-  .else('other')
+const result = match('foo')
+  .when({contains: 'oo'}, 'one')
+  .default('other')
   .resolve();
 ```
 
 ### statement with multiple operators
 ```javascript
-const result = ifty(1)
-  .matches({in: [1]}, 'one')
-  .matches({range: [1, 3]}, 'two')
-  .matches(/foo/, 'three')
-  .matches((value) => value === 1, 'four')
-  .else('other')
+const result = match(1)
+  .when({in: [1]}, 'one')
+  .when({range: [1, 3]}, 'two')
+  .when(/foo/, 'three')
+  .when((value) => value === 1, 'four')
+  .default('other')
   .resolve();
 ```
 
 ### statement with throw instead of else
 ```javascript
-const result = ifty(99)
-  .matches({in: [1]}, 'one')
-  .matches({range: [1, 3]}, 'two')
-  .matches(/foo/, 'three')
-  .matches((value) => value === 1, 'four')
+const result = match(99)
+  .when({in: [1]}, 'one')
+  .when({range: [1, 3]}, 'two')
+  .when(/foo/, 'three')
+  .when((value) => value === 1, 'four')
   .throw('Not found')
   .resolve();
 ```
 
 ### async statement
 ```javascript
-const result = await iftyAsync(1)
-  .matches(Promise.resolve({in: [1]}), Promise.resolve('one'))
-  .else('other')
+const result = await matchAsync(1)
+  .when(Promise.resolve({in: [1]}), Promise.resolve('one'))
+  .default('other')
   .resolve();
 ```
 
 ### async statement with throw instead of else
 ```javascript
-const result = await iftyAsync(99)
-  .matches(Promise.resolve({in: [1]}), Promise.resolve('one'))
-  .matches(Promise.resolve({range: [1, 3]}), Promise.resolve('two'))
-  .matches(Promise.resolve(/foo/), Promise.resolve('three'))
-  .matches(Promise.resolve((value) => value === 1), Promise.resolve('four'))
+const result = await matchAsync(99)
+  .when(Promise.resolve({in: [1]}), Promise.resolve('one'))
+  .when(Promise.resolve({range: [1, 3]}), Promise.resolve('two'))
+  .when(Promise.resolve(/foo/), Promise.resolve('three'))
+  .when(Promise.resolve((value) => value === 1), Promise.resolve('four'))
   .throw('Not found')
   .resolve();
 ```
