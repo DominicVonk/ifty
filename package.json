@@ -1,8 +1,7 @@
 {
   "name": "ifty",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Matches through piped operations",
-  "main": "index.js",
   "type": "module",
   "exports": {
     ".": {

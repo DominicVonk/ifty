@@ -135,7 +135,7 @@ async function _resolveStatementsAsync<T, I>(
   return result;
 }
 
-export function _matches<T, I>(input: I, statements: Statements<T, I>) {
+function _matches<T, I>(input: I, statements: Statements<T, I>) {
   return function (value: ValueType<I>, result: () => T): MatchWith<T, I> {
     statements.push({ statement: value, result });
     return {
@@ -147,7 +147,7 @@ export function _matches<T, I>(input: I, statements: Statements<T, I>) {
   };
 }
 
-export function _matchesAsync<T, I>(input: I | Promise<I>, statements: AsyncStatements<T, I>) {
+function _matchesAsync<T, I>(input: I | Promise<I>, statements: AsyncStatements<T, I>) {
   return function (
     value: Promise<ValueTypeAsync<I>> | ValueTypeAsync<I>,
     result: () => Promise<T> | T,
@@ -162,7 +162,7 @@ export function _matchesAsync<T, I>(input: I | Promise<I>, statements: AsyncStat
   };
 }
 
-export function _else<T, I>(input: I, statements: Statements<T, I>) {
+function _else<T, I>(input: I, statements: Statements<T, I>) {
   return function (result: () => T): MatchOtherwise<T> {
     statements.push({ statement: undefined, result, isElse: true });
     return {
@@ -171,7 +171,7 @@ export function _else<T, I>(input: I, statements: Statements<T, I>) {
   };
 }
 
-export function _elseAsync<T, I>(input: I | Promise<I>, statements: AsyncStatements<T, any>) {
+function _elseAsync<T, I>(input: I | Promise<I>, statements: AsyncStatements<T, any>) {
   return function (result: () => Promise<T> | T): MatchOtherwiseAsync<T> {
     statements.push({ statement: undefined, result, isElse: true });
     return {
