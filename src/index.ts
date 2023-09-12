@@ -30,7 +30,8 @@ type ValueType<I> =
   | { contains: string }
   | { range: [number, number] }
   | { instanceof: NewableFunction }
-  | { partial: any };
+  | { partial: any }
+  | { deep: any };
 
 type ValueTypeAsync<I> = ValueType<I> | ((input: I) => Promise<boolean>);
 
@@ -207,6 +208,9 @@ function _checker(input: any, value: any) {
     if ('partial' in value) {
       return _checkPartial(input, value.partial);
     }
+    if ('deep' in value) {
+      return _checkDeep(input, value.deep);
+    }
   }
   return input === value;
 }
@@ -274,6 +278,32 @@ function _checkPartial(input: any, partial: any) {
         return false;
       }
     } else if (input[key] !== partial[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// check deep if the objects are the same, same as for arrays
+function _checkDeep(input: any, value: any) {
+  if (typeof input !== 'object' || typeof value !== 'object') {
+    if (typeof input === typeof value) {
+      return input === value;
+    }
+    return false;
+  }
+
+  if (Object.keys(input).length !== Object.keys(value).length) {
+    return false;
+  }
+
+  for (const key in value) {
+    if (typeof value[key] === 'object') {
+      if (!_checkDeep(input[key], value[key])) {
+        return false;
+      }
+    } else if (input[key] !== value[key]) {
       return false;
     }
   }

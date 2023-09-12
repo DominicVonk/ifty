@@ -331,4 +331,20 @@ describe('match', function () {
         .exec(),
     ).toBe(true);
   });
+
+  it('should not match the first occurrence with deep', function () {
+    expect(
+      match([{ a: 1 }, { a: 1, b: { c: 3 } }])
+        .when({ deep: [{}, { a: 1, b: { c: 4 } }] }, () => true)
+        .exec(),
+    ).toBe(undefined);
+  });
+
+  it('should match the first occurrence with deep', function () {
+    expect(
+      match([{ a: 1 }, { a: 1, b: { c: 3 } }])
+        .when({ deep: [{ a: 1 }, { a: 1, b: { c: 3 } }] }, () => true)
+        .exec(),
+    ).toBe(true);
+  });
 });

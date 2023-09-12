@@ -60,7 +60,7 @@ const result = match(1)
   .exec();
 ```
 
-### statement with startswith operator
+### statement with starts with operator
 ```javascript
 const result = match('foo')
   .when({startsWith: 'f'}, 'one')
@@ -68,7 +68,7 @@ const result = match('foo')
   .exec();
 ```
 
-### statement with endswith operator
+### statement with ends with operator
 ```javascript
 const result = match('foo')
   .when({endsWith: 'o'}, 'one')
@@ -80,6 +80,22 @@ const result = match('foo')
 ```javascript
 const result = match('foo')
   .when({contains: 'oo'}, 'one')
+  .default('other')
+  .exec();
+```
+
+### statement with deep operator
+```javascript
+const result = match({foo: {bar: 'baz'}})
+  .when({deep: {foo: {bar: 'baz'}}}, 'one')
+  .default('other')
+  .exec();
+```
+
+### statement with partial operator
+```javascript
+const result = match({foo: {bar: 'baz'}, other: 'value'})
+  .when({partial: {foo: {bar: 'baz'}}}, 'one')
   .default('other')
   .exec();
 ```
