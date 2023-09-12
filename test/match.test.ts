@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { match, matchAsync } from '../src/index';
+import { match, matchAsync } from '../src/match';
 describe('match', function () {
   it('should match the first occurrence', function () {
     expect(
@@ -23,9 +23,9 @@ describe('match', function () {
   it('should match the first occurrence with a regex', function () {
     expect(
       match('Hello world')
-        .when(/Hello world/, () => true)
+        .when(/^([Ha-z]+) world$/, (_: string, hello: string) => hello)
         .exec(),
-    ).toBe(true);
+    ).toBe('Hello');
   });
 
   it('should not match the first occurrence', function () {
